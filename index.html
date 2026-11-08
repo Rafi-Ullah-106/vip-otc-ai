@@ -1,1 +1,101 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VIP OTC AI PRO</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090f1d;color:#fff;font-family:Arial;padding:16px}
+header{background:#17243a;padding:20px;border-radius:14px}
+h2{color:#42c9ff;margin:0}
+.card{background:#17243a;padding:18px;margin-top:16px;border-radius:14px}
+label{display:block;margin:12px 0 7px;color:#9fb1ca}
+select,button{width:100%;padding:14px;border:0;border-radius:9px;font-size:16px}
+select{background:#263750;color:white}
+button{background:#087fe5;color:white;font-weight:bold;margin-top:12px}
+button:disabled{opacity:.5}
+.result{text-align:center;padding:25px;background:#101b2d;border-radius:12px}
+#signal{font-size:28px;font-weight:bold;color:#ffc857}
+.small{color:#91a4be;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<h2>VIP OTC AI PRO</h2>
+<p>Advanced Market Analysis Dashboard</p>
+<span class="small">EUR/USD OTC • 1 MINUTE</span>
+</header>
+
+<div class="card">
+<label>Currency Pair</label>
+<select id="pair">
+<option>EUR/USD OTC</option>
+<option>GBP/USD OTC</option>
+<option>USD/JPY OTC</option>
+<option>AUD/USD OTC</option>
+<option>EUR/JPY OTC</option>
+</select>
+
+<label>Timeframe</label>
+<select id="time">
+<option>1 Minute</option>
+<option>5 Seconds</option>
+<option>15 Seconds</option>
+<option>30 Seconds</option>
+</select>
+
+<button id="capture">START SCREEN CAPTURE</button>
+<p id="status" class="small">Screen capture not connected.</p>
+</div>
+
+<div class="card result">
+<p class="small">AI SIGNAL</p>
+<div id="signal">NO TRADE</div>
+<p id="reason">Verified market data required.</p>
+<button id="analyze">ANALYZE MARKET</button>
+</div>
+
+<div class="card">
+<h3>Analysis Status</h3>
+<p id="data">Market feed: Not connected</p>
+<p>ICT Analysis: Waiting</p>
+<p>Price Action: Waiting</p>
+<p>Signal History: No verified trades</p>
+</div>
+
+<script>
+const capture=document.getElementById("capture");
+const status=document.getElementById("status");
+const analyze=document.getElementById("analyze");
+
+let stream=null;
+
+capture.onclick=async()=>{
+ if(!navigator.mediaDevices?.getDisplayMedia){
+  status.textContent="Screen capture is not supported in this browser.";
+  return;
+ }
+ try{
+  stream=await navigator.mediaDevices.getDisplayMedia({video:true});
+  status.textContent="Screen sharing started. Feed recognition still needs setup.";
+  stream.getVideoTracks()[0].onended=()=>{
+   status.textContent="Screen sharing stopped.";
+   stream=null;
+  };
+ }catch(e){
+  status.textContent="Screen capture permission unavailable.";
+ }
+};
+
+analyze.onclick=()=>{
+ document.getElementById("signal").textContent="NO TRADE";
+ document.getElementById("reason").textContent=
+ "No verified Quotex OTC candle feed. Signal engine is not connected.";
+ document.getElementById("data").textContent=
+ "Market feed: Not verified";
+};
+</script>
+</body>
+</html>
+
